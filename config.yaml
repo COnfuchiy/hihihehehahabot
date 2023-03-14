@@ -1,0 +1,14 @@
+log_filename: 'app.log'
+log_file_max_size_bytes: 10485760
+image_hashes_filename: 'images.sav'
+max_stored_hashes: 1000
+max_get_image_iteration: 30
+path_to_model: 'model'
+vk:
+  api_access_token: ''
+  domain_list:
+    - 'rzhakaikoshka'
+  api_version: '5.131'
+tg:
+  api_access_token: ''
+  chat_id: 0

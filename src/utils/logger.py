@@ -73,3 +73,6 @@ class GeneralLogger:
 
     def telegram_request_error(self):
         self._error('telegram bot request error')
+
+    def telegram_image_converting(self):
+        self._error('telegram json data converting')

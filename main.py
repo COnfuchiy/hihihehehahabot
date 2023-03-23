@@ -1,4 +1,4 @@
-from src.infrastructure.app_container import AppContainer
+from src.infrastructure.containers import AppContainer
 from src.infrastructure.init import run_app
 
 app = AppContainer()

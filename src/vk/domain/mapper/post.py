@@ -12,6 +12,7 @@ class PostMapper(HasAttachmentsMapper):
     @staticmethod
     def to_entity(
             post_dto: PostDto,
+            group_name: str = '',
             comments_dto: CommentsDto = None) -> Post:
         attachments: list[Attachment] = PostMapper.get_attachments_entities(
             post_dto.attachments)
@@ -24,6 +25,7 @@ class PostMapper(HasAttachmentsMapper):
         return Post(
             id=post_dto.id,
             is_donate=post_dto.is_donate,
+            group_name=group_name,
             marked_as_ads=post_dto.marked_as_ads,
             attachments=attachments,
             date=post_dto.date,

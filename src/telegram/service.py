@@ -7,6 +7,7 @@ from src.utils.logger import GeneralLogger
 
 
 class TelegramService:
+    _base_telegram_api = 'https://api.telegram.org/'
 
     @inject
     def __init__(self,
@@ -32,3 +33,8 @@ class TelegramService:
                 caption=text)
         except (ApiException, Exception):
             self._logger.telegram_setup_error()
+
+    def get_url_file(self, file_id: str):
+        file_info = self._bot.get_file(file_id)
+        return self._base_telegram_api + \
+            f'file/bot{self._api_token}/{file_info.file_path}'

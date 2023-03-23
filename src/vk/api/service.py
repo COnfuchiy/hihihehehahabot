@@ -1,4 +1,5 @@
 import random
+import re
 
 from dependency_injector.wiring import Provide, inject
 
@@ -33,19 +34,45 @@ class VKService:
 
                 # for one first post
                 post_data = posts_data['items'][0]
-                if not VKService.filter_post_data(post_data):
+                if not VKService.validate_post_data(
+                        post_data) and VKService.check_text_for_ads(posts_data):
                     continue
                 post_dto = PostDto.from_dict(post_data)
-                post = PostMapper.to_entity(post_dto)
+                post = PostMapper.to_entity(
+                    post_dto=post_dto,
+                    group_name=random_domain
+                )
                 if post:
                     return post
         self._logger.max_iteration_post_search_reached()
         raise SystemExit()
 
     @staticmethod
-    def filter_post_data(post_data: dict) -> bool:
+    def validate_post_data(post_data: dict) -> bool:
         try:
             return True if post_data['marked_as_ads'] != 1 \
-                           and not post_data['donut']['is_donut'] else False
+                           and not post_data['donut']['is_donut'] \
+                           and post_data['comments']['can_post'] \
+                           and len(post_data['text']) > 3000 else False
         except KeyError:
             return False
+
+    @staticmethod
+    def check_text_for_ads(post_data: dict) -> bool:
+        try:
+            vk_link_match = re.search(r'\[.*\]', post_data['text'])
+            link_match = re.search(
+                r"(?i)\b((?:https?://|www\d{0,3}[.]|[a-z0-9.\-]+[.]"
+                r"[a-z]{2,4}/)(?:[^\s()<>]+|\(([^\s()<>]+|(\([^\s()<>]"
+                r"+\)))*\))+(?:\(([^\s()<>]+|(\([^\s()<>]+\)))*\)|[^\s`!"
+                r"()\[\]{};:'\".,<>?«»“”‘’]))", post_data['text'])
+            return True if vk_link_match and link_match else False
+        except KeyError:
+            return True
+
+    @staticmethod
+    def get_message_to_image(group: str, text: str = ''):
+        if text:
+            return group + ' - ' + text
+        else:
+            return group

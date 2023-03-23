@@ -4,7 +4,6 @@ from src.image.entity import ImageObject
 from src.image.receiver import ImageReceiver
 from src.image.register import ImageRegister
 from src.utils.logger import GeneralLogger
-from src.vk.domain.entity.attachment import Attachment
 
 
 class ImageService:
@@ -16,10 +15,7 @@ class ImageService:
         self._image_register = ImageRegister()
         self._image_receiver = ImageReceiver()
 
-    def get_attachment_image(
-            self,
-            attachment: Attachment) -> ImageObject:
-        image_url = attachment.url
+    def get_image_from_url(self, image_url: str) -> ImageObject:
         image_object = self._image_receiver.from_url(image_url)
         if not image_object:
             return None
